@@ -21,7 +21,7 @@ set -eu
 : ${TMUX_SESSIONRC:=$HOME/.tmux_sessionrc}
 : ${TMUX_SESSION_HOME:=$HOME/.tmux_session.d}
 
-default_session=default
+default_session=$(hostname)
 
 usage()
 {
