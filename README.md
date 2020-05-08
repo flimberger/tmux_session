@@ -42,6 +42,14 @@ Example:
     newsession()
     {
             session="$1"
-            tmux new-session -ds "$session" -n src -c /usr/src
-            tmux new-window -t "${session}:2" -n obj -c /usr/obj
+            startdir="$home/projects/myproject"
+            shellcmd="/usr/local/bin/bash --rcfile $startdir/etc/bashrc"
+            tmux new-session -ds "$session" \\
+                -n src \\
+                -c "$startdir/src" \\
+                "$shellcmd"
+            tmux set-option -t "$session" \\
+                default-command "$shellcmd"
+            tmux new-window -t "${session}:2" \\
+                -n obj -c "$startdir/obj"
     }

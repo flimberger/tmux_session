@@ -1,0 +1,86 @@
+.\"Copyright (c) 2020 Florian Limberger <flo@snakeoilproductions.net>
+.\"
+.\"Permission to use, copy, modify, and distribute this software for any
+.\"purpose with or without fee is hereby granted, provided that the above
+.\"copyright notice and this permission notice appear in all copies.
+.\"
+.\"THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\"WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\"MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\"ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\"ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\"OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd $Mdocdate: May 7 2020$
+.Dt TMUX_SESSION 1
+.Os
+.Sh NAME
+.Nm tmux_session
+.Nd create and attach to tmux sessions
+.Sh SYNOPSIS
+.Nm tmux_session
+.Op Fl s Ar name
+.Sh DESCRIPTION
+The
+.Nm
+utility creates and attaches to pre-defined sessions.
+Sessions are identified by their name.
+For each name,
+a configuration file is looked up in
+.Pa tmux_session.d ,
+which is a plain shell script containing a function named
+.Fn newsession .
+In this function,
+normal
+.Xr tmux 1
+commands are used to create the session.
+.Pp
+Default values can be overwritten by a file named
+.Pa tmux_sessionrc .
+Currently,
+only the
+.Va default_session
+variable for the default session name can be overwritten.
+.Sh ENVIRONMENT
+.Bl -tag -width TMUX_SESSION_HOME -compact
+.It Ev TMUX_SESSIONRC
+Overrides the default location of
+.Pa tmux_sessionrc .
+.It Ev TMUX_SESSION_HOME
+Overrides the default location of
+.Pa tmux_session.d .
+.El
+.Sh FILES
+.Bl -tag -width $HOME/.tmux_sessionrc -compact
+.It Pa $HOME/.tmux_sessionrc
+Loaded on each invocation,
+contains the default configuration.
+.It Pa $HOME/.tmux_session.d
+Directory containing the session configuration files.
+.El
+.Sh EXIT STATUS
+.Ex -std tmux_session
+.Sh EXAMPLES
+An example session configuration file using a special shell and shell startup
+file:
+.Bd -literal -offset indent
+newsession()
+{
+	session="$1"
+	startdir="$home/projects/myproject"
+	shellcmd="/usr/local/bin/bash --rcfile $startdir/etc/bashrc"
+	tmux new-session -ds "$session" \\
+	    -n src \\
+	    -c "$startdir/src" \\
+	    "$shellcmd"
+	tmux set-option -t "$session" \\
+	    default-command "$shellcmd"
+	tmux new-window -t "${session}:2" \\
+	    -n obj -c "$startdir/obj"
+}
+.Ed
+.Sh SEE ALSO
+.Xr tmux 1
+.Sh AUTHORS
+.An -nosplit
+.An Florian Limberger Aq Mt flo@purplekraken.com .
