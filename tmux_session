@@ -23,7 +23,7 @@ set -eu
 
 usage()
 {
-	echo "usage: $0 [-s SESSION] OPTIONS" >&2
+	echo "usage: $0 [-n SESSION] OPTIONS" >&2
 	exit 1
 }
 
@@ -38,7 +38,7 @@ defaultsession()
 
 if [ $# -gt 0 ]; then
 	case "$1" in
-	-s)
+	-n)
 		if [ $# -lt 2 ]; then
 			echo "no valid session specified" >&2
 			usage
