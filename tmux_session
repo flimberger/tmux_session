@@ -23,7 +23,7 @@ set -eu
 
 usage()
 {
-	echo "usage: $0 [-n SESSION] OPTIONS" >&2
+	echo "usage: $0 [-d][-n SESSION] OPTIONS" >&2
 	exit 1
 }
 
@@ -36,8 +36,15 @@ defaultsession()
 
 : ${default_session:=$(hostname)}
 
-if [ $# -gt 0 ]; then
+detached=0
+
+while [ $# -gt 0 ]; do
 	case "$1" in
+	-d)
+		echo "detached"
+		detached=1
+		shift
+		;;
 	-n)
 		if [ $# -lt 2 ]; then
 			echo "no valid session specified" >&2
@@ -48,13 +55,13 @@ if [ $# -gt 0 ]; then
 			shift
 			shift
 		fi
-	;;
-	-h)
+		;;
+	*)
 		usage
 		exit
-	;;
+		;;
 	esac
-fi
+done
 
 : "${session:=$default_session}"
 
@@ -71,4 +78,6 @@ if ! tmux has-session -t "$session" 2>/dev/null; then
 	fi
 fi
 
-exec tmux attach-session -t "$session" -c "$HOME"
+if [ "$detached" -ne 1 ]; then
+	exec tmux attach-session -t "$session" -c "$HOME"
+fi

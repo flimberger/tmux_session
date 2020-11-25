@@ -19,11 +19,19 @@
 .Nd create and attach to tmux sessions
 .Sh SYNOPSIS
 .Nm tmux_session
+.Op Fl d
 .Op Fl n Ar name
 .Sh DESCRIPTION
 The
 .Nm
-utility creates and attaches to pre-defined sessions.
+utility creates pre-defined sessions.
+If the
+.Fl d
+flag is given,
+the session says detached,
+otherwise
+.Nm
+directly attaches to the newly created session.
 Sessions are identified by their name.
 For each name,
 a configuration file is looked up in
