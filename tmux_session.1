@@ -1,4 +1,4 @@
-.\"Copyright (c) 2020 Florian Limberger <flo@snakeoilproductions.net>
+.\"Copyright (c) 2020, 2021 Florian Limberger <flo@snakeoilproductions.net>
 .\"
 .\"Permission to use, copy, modify, and distribute this software for any
 .\"purpose with or without fee is hereby granted, provided that the above
@@ -34,14 +34,16 @@ otherwise
 directly attaches to the newly created session.
 Sessions are identified by their name.
 For each name,
-a configuration file is looked up in
-.Pa tmux_session.d ,
-which is a plain shell script containing a function named
-.Fn newsession .
-In this function,
-normal
+a startup file is looked up in
+.Pa $HOME/.tmux_session.d ,
+which is a plain shell script containing normal
 .Xr tmux 1
-commands are used to create the session.
+commands to create the session.
+Inside the startup file,
+the variable
+.Ev session
+is available,
+which provides the session name.
 .Pp
 Default values can be overwritten by a file named
 .Pa tmux_sessionrc .
@@ -72,20 +74,16 @@ Directory containing the session configuration files.
 An example session configuration file using a special shell and shell startup
 file:
 .Bd -literal -offset indent
-newsession()
-{
-	session="$1"
-	startdir="$home/projects/myproject"
-	shellcmd="/usr/local/bin/bash --rcfile $startdir/etc/bashrc"
-	tmux new-session -ds "$session" \\
-	    -n src \\
-	    -c "$startdir/src" \\
-	    "$shellcmd"
-	tmux set-option -t "$session" \\
-	    default-command "$shellcmd"
-	tmux new-window -t "${session}:2" \\
-	    -n obj -c "$startdir/obj"
-}
+startdir="${HOME}/projects/myproject"
+shellcmd="/usr/local/bin/bash --rcfile ${startdir}/etc/bashrc"
+tmux new-session -ds "$session" \\
+    -n src \\
+    -c "${startdir}/src" \\
+    "$shellcmd"
+tmux set-option -t "$session" \\
+    default-command "$shellcmd"
+tmux new-window -t "${session}:2" \\
+    -n obj -c "${startdir}/obj"
 .Ed
 .Sh SEE ALSO
 .Xr tmux 1

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: ISC
 #
-# Copyright (c) 2020 Florian Limberger <flo@purplekraken.com>
+# Copyright (c) 2020, 2021 Florian Limberger <flo@purplekraken.com>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -27,9 +27,9 @@ usage()
 	exit 1
 }
 
-defaultsession()
+log()
 {
-	tmux new-session -ds "$1"
+	echo "tmux_session: $1" >&2
 }
 
 [ -s "$TMUX_SESSIONRC" ] && . "$TMUX_SESSIONRC"
@@ -41,7 +41,6 @@ detached=0
 while [ $# -gt 0 ]; do
 	case "$1" in
 	-d)
-		echo "detached"
 		detached=1
 		shift
 		;;
@@ -65,16 +64,13 @@ done
 
 : "${session:=$default_session}"
 
-cfgfile="$TMUX_SESSION_HOME/$session.sh"
-if [ -s "$cfgfile" ]; then
-	. "$cfgfile"
-fi
+cfgfile="${TMUX_SESSION_HOME}/${session}.sh"
 
 if ! tmux has-session -t "$session" 2>/dev/null; then
-	if type newsession >/dev/null ; then
-		newsession "$session"
+	if [ -s "$cfgfile" ]; then
+		(. "$cfgfile")
 	else
-		defaultsession "$session"
+		tmux new-session -ds "$session"
 	fi
 fi
 
