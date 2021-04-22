@@ -27,9 +27,10 @@ usage()
 	exit 1
 }
 
-log()
+err()
 {
 	echo "tmux_session: $1" >&2
+	exit ${2:-1}
 }
 
 [ -s "$TMUX_SESSIONRC" ] && . "$TMUX_SESSIONRC"
@@ -68,7 +69,10 @@ cfgfile="${TMUX_SESSION_HOME}/${session}.sh"
 
 if ! tmux has-session -t "$session" 2>/dev/null; then
 	if [ -s "$cfgfile" ]; then
-		(. "$cfgfile")
+		(. "$cfgfile") || err "failed to create session ${session}: $cfgfile failed"
+		if ! tmux has-session -t "$session" 2>/dev/null
+		then	err "failed to create session $session: $cfgfile did not create session"
+		fi
 	else
 		tmux new-session -ds "$session"
 	fi
