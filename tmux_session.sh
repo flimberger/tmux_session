@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: ISC
 #
-# Copyright (c) 2020, 2021 Florian Limberger <flo@purplekraken.com>
+# Copyright (c) Florian Limberger <flo@purplekraken.com>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,7 +23,7 @@ set -eu
 
 usage()
 {
-	echo "usage: $0 [-d][-n SESSION] OPTIONS" >&2
+	echo "usage: $0 [-d] [name]" >&2
 	exit 1
 }
 
@@ -45,20 +45,13 @@ while [ $# -gt 0 ]; do
 		detached=1
 		shift
 		;;
-	-n)
-		if [ $# -lt 2 ]; then
-			echo "no valid session specified" >&2
-			usage
-			exit 1
-		else
-			session="$2"
-			shift
-			shift
-		fi
+	-*)	usage
 		;;
-	*)
-		usage
-		exit
+	*)	session="$1"
+		# shift all remaining arguments out to exit the outer loop
+		while [ $# -gt 0 ]
+		do	shift
+		done
 		;;
 	esac
 done

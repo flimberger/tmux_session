@@ -4,7 +4,7 @@ A light and portable session manager for `tmux(1)`.
 
 # Synopsis
 
-    tmux_session [ -s name ]
+    tmux_session [-d] [name]
 
 Attach to the named `tmux(1)` session,
 or `default` if no name is given.
@@ -39,17 +39,13 @@ otherwise a default session with a single window is created.
 
 Example:
 
-    newsession()
-    {
-            session="$1"
-            startdir="$home/projects/myproject"
-            shellcmd="/usr/local/bin/bash --rcfile $startdir/etc/bashrc"
-            tmux new-session -ds "$session" \\
-                -n src \\
-                -c "$startdir/src" \\
-                "$shellcmd"
-            tmux set-option -t "$session" \\
-                default-command "$shellcmd"
-            tmux new-window -t "${session}:2" \\
-                -n obj -c "$startdir/obj"
-    }
+    startdir="${HOME}/projects/myproject"
+    shellcmd="/usr/local/bin/bash --rcfile ${startdir}/etc/bashrc"
+    tmux new-session -ds "$session" \
+        -n src \
+        -c "${startdir}/src" \
+        "$shellcmd"
+    tmux set-option -t "$session" \
+        default-command "$shellcmd"
+    tmux new-window -t "${session}:2" \
+        -n obj -c "${startdir}/obj"

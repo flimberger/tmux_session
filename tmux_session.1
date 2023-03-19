@@ -1,4 +1,4 @@
-.\"Copyright (c) 2020, 2021 Florian Limberger <flo@snakeoilproductions.net>
+.\"Copyright (c) Florian Limberger <flo@snakeoilproductions.net>
 .\"
 .\"Permission to use, copy, modify, and distribute this software for any
 .\"purpose with or without fee is hereby granted, provided that the above
@@ -11,7 +11,7 @@
 .\"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 .\"ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\"OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-.Dd $Mdocdate: May 7 2020$
+.Dd $Mdocdate: Mar 19 2023$
 .Dt TMUX_SESSION 1
 .Os
 .Sh NAME
@@ -20,7 +20,7 @@
 .Sh SYNOPSIS
 .Nm tmux_session
 .Op Fl d
-.Op Fl n Ar name
+.Op Ar name
 .Sh DESCRIPTION
 The
 .Nm
@@ -32,9 +32,11 @@ the session says detached,
 otherwise
 .Nm
 directly attaches to the newly created session.
-Sessions are identified by their name.
-For each name,
-a startup file is looked up in
+Sessions are identified by their
+.Ar name .
+If
+.Ar name
+is given, a startup file is looked up in
 .Pa $HOME/.tmux_session.d ,
 which is a plain shell script containing normal
 .Xr tmux 1
