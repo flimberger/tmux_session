@@ -21,12 +21,6 @@ set -eu
 : ${TMUX_SESSIONRC:=$HOME/.tmux_sessionrc}
 : ${TMUX_SESSION_HOME:=$HOME/.tmux_session.d}
 
-usage()
-{
-	echo "usage: $0 [-d] [name]" >&2
-	exit 1
-}
-
 err()
 {
 	echo "tmux_session: $1" >&2
@@ -45,7 +39,9 @@ while [ $# -gt 0 ]; do
 		detached=1
 		shift
 		;;
-	-*)	usage
+	-*)	echo "tmux_session: unknown flag $1" >&2
+		echo "usage: $0 [-d] [name]" >&2
+		exit 1
 		;;
 	*)	session="$1"
 		# shift all remaining arguments out to exit the outer loop
